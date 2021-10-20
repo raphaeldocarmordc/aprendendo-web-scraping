@@ -23,8 +23,8 @@ class MetroSp
     #  linha.content
     #end
     @linhas = doc.xpath("//li//p//strong")
-    @nome_linha = linhas.map do |l|
-      l.content
+    @nome_linha = linhas.map do |linha|
+      linha.content
     end
     pp nome_linha
   end
@@ -35,8 +35,8 @@ class MetroSp
     #  operacao.content
     #end
     @status = doc.xpath("//li//div//p//a")
-    @status_linha = status.map do |s|
-      s.content
+    @status_linha = status.map do |operacao|
+      operacao.content
     end
     pp status_linha
   end
