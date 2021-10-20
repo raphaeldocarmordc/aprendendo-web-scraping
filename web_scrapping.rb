@@ -18,26 +18,26 @@ class MetroSp
   end
 
   def get_name
-    #linhas = doc.css('div.status-linhas li')
+    #@linhas = doc.css('div.status-linhas li')
+    #@nome_linha = @linhas.search('p strong').map do |linha|
+    #  linha.content
+    #end
     @linhas = doc.xpath("//li//p//strong")
     @nome_linha = linhas.map do |l|
       l.content
     end
-    #nome_linha = linhas.search('p strong').map do |linha|
-    #  linha.content
-    #end
     pp nome_linha
   end
 
   def get_status
     #status = doc.css('div.status-linhas li')
+    #status_linha = status.search('p a').map do |operacao|
+    #  operacao.content
+    #end
     @status = doc.xpath("//li//div//p//a")
     @status_linha = status.map do |s|
       s.content
     end
-    #status_linha = status.search('p a').map do |operacao|
-    #  operacao.content
-    #end
     pp status_linha
   end
 
