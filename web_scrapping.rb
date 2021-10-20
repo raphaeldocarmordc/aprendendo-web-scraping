@@ -1,28 +1,50 @@
 require 'nokogiri'
 require 'open-uri'
-require 'byebug'
 
-class MetroSP
+class MetroSp
+
+  attr_reader :linhas, :status, :nome_linha, :status_linha, :hash_das_informacoes, :url, :html, :doc
+
   def initialize
-    url = "http://www.metro.sp.gov.br/Sistemas/direto-do-metro-via4/MetroStatusLinha/mobile/smartPhone/diretoDoMetro.aspx"
-    html = URI.open(url)
-    doc = Nokogiri::HTML(html)
-    titulo = doc#parse
+    @url = "http://www.metro.sp.gov.br/Sistemas/direto-do-metro-via4/MetroStatusLinha/mobile/smartPhone/diretoDoMetro.aspx"
+    @html = URI.open(url)
+    @doc = Nokogiri::HTML(html)
+  end
 
-    linhas = doc.css('div.status-linhas li')
+  def web
+    get_name
+    get_status
+    hash_zipado
+  end
 
-    nome_linha = linhas.search('p strong').map do |linha|
-      linha.content
+  def get_name
+    #linhas = doc.css('div.status-linhas li')
+    @linhas = doc.xpath("//li//p//strong")
+    @nome_linha = linhas.map do |l|
+      l.content
     end
-    pp nome_linha
-
-    
-   # linhas.xpath('//div//li').each do |infos|
-    #  nome_linha = linhas.at('.align-left').text
+    #nome_linha = linhas.search('p strong').map do |linha|
+    #  linha.content
     #end
-   # puts nome_linha
+    pp nome_linha
+  end
 
+  def get_status
+    #status = doc.css('div.status-linhas li')
+    @status = doc.xpath("//li//div//p//a")
+    @status_linha = status.map do |s|
+      s.content
+    end
+    #status_linha = status.search('p a').map do |operacao|
+    #  operacao.content
+    #end
+    pp status_linha
+  end
+
+  def hash_zipado
+    @hash_das_informacoes = nome_linha.zip(status_linha).to_h
+    pp hash_das_informacoes
   end
 end
 
-MetroSP.new
+MetroSp.new.web
