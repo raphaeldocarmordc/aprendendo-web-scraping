@@ -71,5 +71,3 @@ class MetroSp
     hash_das_informacoes.select{|item| item[:name] == escolha_do_usuario}
   end
 end
-
-MetroSp.new.web
