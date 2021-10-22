@@ -1,15 +1,10 @@
 GEM
-  remote: https://rubygems.org/
   specs:
-    nokogiri (1.12.5-x64-mingw32)
-      racc (~> 1.4)
-    racc (1.6.0)
 
 PLATFORMS
-  x64-mingw32
+  x86_64-linux
 
 DEPENDENCIES
-  nokogiri
 
 BUNDLED WITH
-   2.2.28
+   2.2.29

@@ -3,12 +3,12 @@ require 'open-uri'
 
 class MetroSp
 
-  attr_reader :linhas, :i, :escolha_do_usuario, :nome_linha, :status_linha, :string_para_verificacao, :hash_das_informacoes, :url, :html, :doc, :conteudo_linhas
+  attr_reader :escolha_do_usuario, :nome_linha, :status_linha, :string_para_verificacao, :hash_das_informacoes, :conteudo_linhas
 
   def initialize
-    @url = "http://www.metro.sp.gov.br/Sistemas/direto-do-metro-via4/MetroStatusLinha/mobile/smartPhone/diretoDoMetro.aspx"
-    @html = URI.open(url)
-    @doc = Nokogiri::HTML(html)
+    url = "http://www.metro.sp.gov.br/Sistemas/direto-do-metro-via4/MetroStatusLinha/mobile/smartPhone/diretoDoMetro.aspx"
+    html = URI.open(url)
+    doc = Nokogiri::HTML(html)
     @conteudo_linhas = doc.css('div.status-linhas li')
   end
 
@@ -17,14 +17,10 @@ class MetroSp
     get_status
     hash_zipado
     escolher_estacao
-    conferir_escolha
   end
 
   def get_name
-    #@nome_linha = @linhas.search('p strong').map do |linha|
-    #  linha.content
-    #end
-    @linhas = doc.xpath("//li//p//strong")
+    linhas = conteudo_linhas.search('p strong')
     @nome_linha = linhas.map do |linha|
       linha.content
     end
@@ -46,30 +42,33 @@ class MetroSp
     puts "se tem as opções: #{nome_linha}."
     puts "Você deseja consultar o status de qual delas?"
     puts "Digite o nome ou o número da linha escolhida, por gentileza: "
-    escolha_do_usuario = gets.chomp.downcase.to_s
-    @string_para_verificacao = escolha_do_usuario.strip.tr(" ", "")
+    pedir_escolha
+  end
+
+  def pedir_escolha
+    @escolha_do_usuario = gets.chomp.capitalize.to_s
+    conferir_escolha
   end
 
   def conferir_escolha
-    case string_para_verificacao
-    when "linha1", "1"
-      puts hash_das_informacoes[0].values
-    when "linha2", "2"
-      puts hash_das_informacoes[1].values
-    when "linha3", "3"
-      puts hash_das_informacoes[2].values
-    when "linha15", "15"
-      puts hash_das_informacoes[3].values
-    when "linha4", "4"
-      puts hash_das_informacoes[4].values
+    if escolha_do_usuario == "Listar"
+      puts hash_das_informacoes
     else
-      puts "\nInformação não encontrada"
+      resposta = find_line_status(@escolha_do_usuario)
+      if resposta.any?
+        puts resposta.first.fetch(:status, "")
+      else
+        puts "Informação não encontrada"
+        puts "Tente novamente: "
+        pedir_escolha
+      end
     end
+  end
 
-  #  hash_das_informacoes.each do |hash|
-  #    hash.select{|k, v| v == escolha_do_usuario}
-  #  end
+  private
 
+  def find_line_status(escolha_do_usuario)
+    hash_das_informacoes.select{|item| item[:name] == escolha_do_usuario}
   end
 end
 
