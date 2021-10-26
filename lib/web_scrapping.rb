@@ -41,7 +41,7 @@ class MetroSp
     puts "\nDentre as #{nome_linha.size} linhas do Metrô de SP,"
     puts "se tem as opções: #{nome_linha}."
     puts "Você deseja consultar o status de qual delas?"
-    puts "Digite o nome ou o número da linha escolhida, por gentileza: "
+    puts "Digite o nome da linha escolhida, por gentileza: "
     pedir_escolha
   end
 
